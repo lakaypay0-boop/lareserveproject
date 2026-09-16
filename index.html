@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Réserve Hôtel, Pétion-Ville</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --forest:#16261C;
+  --forest-deep:#0F1C14;
+  --ivory:#F4EFE3;
+  --ivory-dim:#E9E1CC;
+  --mahogany:#3D2A1F;
+  --gold:#B98D4A;
+  --gold-soft:#D9BC85;
+  --coral:#C9502F;
+  --ink:#20241E;
+  --serif:'Fraunces', serif;
+  --sans:'Work Sans', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{
+  font-family:var(--sans);
+  background:var(--ivory);
+  color:var(--ink);
+  overflow-x:hidden;
+  font-weight:400;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--gold); color:var(--forest-deep);}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important;}
+}
+
+/* ---------- utility ---------- */
+.wrap{max-width:1240px; margin:0 auto; padding:0 6vw;}
+.eyebrow{
+  font-family:var(--sans);
+  font-size:.8rem;
+  letter-spacing:.04em;
+  color:var(--gold);
+  font-weight:500;
+  margin-bottom:1.1rem;
+}
+.rule{
+  width:56px;height:2px;background:var(--gold);
+  border:none; margin:1.4rem 0;
+}
+h1,h2,h3{font-family:var(--serif); font-weight:500; line-height:1.05;}
+.btn{
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-family:var(--sans); font-size:.92rem; font-weight:500;
+  padding:.95rem 1.9rem; border-radius:2px;
+  border:1px solid currentColor;
+  cursor:pointer; background:none;
+  position:relative; overflow:hidden;
+}
+.btn-gold{ color:var(--forest-deep); background:var(--gold); border-color:var(--gold); }
+.btn-line{ color:var(--ivory); border-color:rgba(244,239,227,.5); }
+.btn span{position:relative; z-index:2;}
+
+/* ---------- preloader ---------- */
+#preloader{
+  position:fixed; inset:0; background:var(--forest-deep);
+  z-index:999; display:flex; align-items:center; justify-content:center;
+}
+#preloader .mark{
+  font-family:var(--serif); color:var(--ivory); font-size:1.4rem;
+  letter-spacing:.08em; opacity:0;
+}
+
+/* ---------- header ---------- */
+header{
+  position:fixed; top:0; left:0; width:100%; z-index:100;
+  padding:1.6rem 0; transition:background .5s ease, padding .5s ease, box-shadow .5s ease;
+}
+header.solid{
+  background:rgba(22,38,28,.94); backdrop-filter:blur(6px);
+  padding:1rem 0; box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+header .wrap{display:flex; align-items:center; justify-content:space-between;}
+.logo{font-family:var(--serif); font-size:1.3rem; color:var(--ivory); letter-spacing:.02em;}
+.logo em{font-style:italic; color:var(--gold-soft);}
+nav{display:flex; align-items:center; gap:2.4rem;}
+nav a{font-size:.86rem; color:var(--ivory-dim); font-weight:400; position:relative;}
+nav a:not(.btn)::after{
+  content:''; position:absolute; left:0; bottom:-5px; width:0; height:1px; background:var(--gold-soft);
+  transition:width .35s ease;
+}
+nav a:not(.btn):hover::after{width:100%;}
+.nav-toggle{display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer;}
+.nav-toggle span{width:24px; height:1.5px; background:var(--ivory);}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; height:100vh; min-height:640px; overflow:hidden;
+  display:flex; align-items:flex-end;
+}
+.hero-media{position:absolute; inset:-10% -5%; z-index:0;}
+.hero-media img{width:100%; height:100%; object-fit:cover;}
+.hero-scrim{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, rgba(15,28,20,.35) 0%, rgba(15,28,20,.25) 45%, rgba(15,28,20,.88) 100%);
+}
+.hero-content{position:relative; z-index:2; width:100%; padding-bottom:5.5rem;}
+.hero-content .wrap{max-width:1240px;}
+.hero-kicker{
+  color:var(--gold-soft); font-size:.85rem; letter-spacing:.05em;
+  display:flex; align-items:center; gap:.7rem; margin-bottom:1.4rem;
+  overflow:hidden;
+}
+.hero h1{
+  color:var(--ivory); font-size:clamp(2.6rem, 6.4vw, 5.4rem);
+  max-width:14ch;
+}
+.hero h1 .line{overflow:hidden; display:block;}
+.hero h1 .line span{display:block; transform:translateY(110%);}
+.hero p.lede{
+  color:var(--ivory-dim); font-size:1.05rem; max-width:36ch; margin:1.6rem 0 2.2rem;
+  font-weight:300; opacity:0;
+}
+.hero-cta{display:flex; gap:1rem; flex-wrap:wrap; opacity:0;}
+.trust-strip{
+  display:flex; align-items:center; gap:.9rem; flex-wrap:wrap;
+  margin-top:2.4rem; padding-top:1.6rem; border-top:1px solid rgba(244,239,227,.18);
+  font-size:.82rem; color:var(--ivory-dim); opacity:0; max-width:44rem;
+}
+.trust-strip strong{color:var(--gold-soft); font-family:var(--serif); font-weight:500;}
+.trust-strip .tdot{width:4px; height:4px; border-radius:50%; background:rgba(244,239,227,.4);}
+.scroll-cue{
+  position:absolute; right:6vw; bottom:2.4rem; z-index:2;
+  writing-mode:vertical-rl; color:var(--ivory-dim); font-size:.78rem; letter-spacing:.05em;
+  display:flex; align-items:center; gap:.8rem; opacity:0;
+}
+.scroll-cue::after{content:''; width:1px; height:48px; background:var(--gold-soft); display:block;
+  animation:scrollcue 2.2s ease-in-out infinite;}
+@keyframes scrollcue{0%{transform:scaleY(0); transform-origin:top;}50%{transform:scaleY(1); transform-origin:top;}50.01%{transform-origin:bottom;}100%{transform:scaleY(0); transform-origin:bottom;}}
+
+/* ---------- section basics ---------- */
+section{position:relative;}
+.pad{padding:8.5rem 0;}
+.dark{background:var(--forest-deep); color:var(--ivory);}
+.dark .eyebrow{color:var(--gold-soft);}
+
+/* ---------- intro / about ---------- */
+.about{display:grid; grid-template-columns:1fr 1fr; gap:5vw; align-items:center;}
+.about-text h2{font-size:clamp(2rem,3.4vw,2.9rem); max-width:12ch;}
+.about-text p{font-size:1.02rem; line-height:1.75; color:#3a382f; max-width:46ch; margin-top:1.3rem;}
+.about-figures{display:flex; gap:2.6rem; margin-top:2.6rem;}
+.fig .num{font-family:var(--serif); font-size:2.6rem; color:var(--coral);}
+.fig .lab{font-size:.82rem; color:#6b6a5f; margin-top:.2rem;}
+.about-media{position:relative;}
+.about-media .frame{
+  position:relative; overflow:hidden; border-radius:2px;
+}
+.about-media .frame img{width:100%; height:560px; object-fit:cover; transform:scale(1.15);}
+.about-media .accent{
+  position:absolute; bottom:-1.6rem; left:-1.6rem; background:var(--mahogany); color:var(--ivory);
+  padding:1.4rem 1.7rem; max-width:230px; font-family:var(--serif); font-size:1.02rem; line-height:1.4;
+  font-style:italic;
+}
+
+/* ---------- rooms ---------- */
+.rooms-head{display:flex; justify-content:space-between; align-items:flex-end; gap:2rem; flex-wrap:wrap; margin-bottom:4rem;}
+.rooms-head h2{font-size:clamp(2rem,3.6vw,3.2rem); max-width:11ch;}
+.rooms-head p{max-width:34ch; color:#3a382f; font-size:.98rem; line-height:1.6;}
+.rooms-note{font-size:.85rem; color:var(--coral); margin-top:.9rem;}
+.room-row{
+  display:grid; grid-template-columns:1.05fr .95fr; gap:5vw; align-items:center;
+  padding:4.5rem 0; border-top:1px solid rgba(61,42,31,.14);
+}
+.room-row:last-child{border-bottom:1px solid rgba(61,42,31,.14);}
+.room-row.rev{grid-template-columns:.95fr 1.05fr;}
+.room-row.rev .room-media{order:2;}
+.room-media{overflow:hidden; position:relative;}
+.room-media img{width:100%; height:420px; object-fit:cover;}
+.room-tag{font-size:.8rem; color:var(--coral); letter-spacing:.03em; margin-bottom:.6rem;}
+.room-row h3{font-size:clamp(1.7rem,2.6vw,2.3rem);}
+.room-row p{color:#4a483d; margin:1.1rem 0 1.4rem; line-height:1.7; max-width:42ch;}
+.amenities{display:flex; flex-wrap:wrap; gap:.6rem 1rem; margin-bottom:1.6rem;}
+.amenities span{
+  font-size:.78rem; color:var(--forest); border:1px solid rgba(22,38,28,.25);
+  padding:.35rem .8rem; border-radius:20px;
+}
+.room-link{font-size:.88rem; font-weight:500; border-bottom:1px solid var(--gold); padding-bottom:2px;}
+
+/* ---------- restaurant (parallax) ---------- */
+.rest{
+  height:88vh; min-height:560px; position:relative; overflow:hidden;
+  display:flex; align-items:center;
+}
+.rest-media{position:absolute; inset:-15% 0; z-index:0;}
+.rest-media img{width:100%; height:100%; object-fit:cover;}
+.rest-scrim{position:absolute; inset:0; background:linear-gradient(90deg, rgba(15,28,20,.92) 20%, rgba(15,28,20,.35) 75%); z-index:1;}
+.rest-content{position:relative; z-index:2; color:var(--ivory); max-width:520px;}
+.rest-content h2{font-size:clamp(2.1rem,3.6vw,3.1rem);}
+.rest-content p{color:var(--ivory-dim); margin:1.3rem 0 1.8rem; line-height:1.75; font-weight:300;}
+.rest-hours{display:flex; gap:2.4rem; margin-top:2rem;}
+.rest-hours div{font-size:.85rem; color:var(--gold-soft);}
+.rest-hours strong{display:block; color:var(--ivory); font-family:var(--serif); font-size:1rem; font-weight:500;}
+
+/* ---------- events ---------- */
+.events-head{max-width:640px; margin-bottom:3.5rem;}
+.events-head h2{font-size:clamp(2rem,3.6vw,3.2rem);}
+.events-head p{color:#3a382f; margin-top:1.1rem; line-height:1.7;}
+.events-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:1.6rem;}
+.ev-card{position:relative; overflow:hidden; border-radius:2px; cursor:default;}
+.ev-card:first-child{grid-row:1/3;}
+.ev-card img{width:100%; height:100%; object-fit:cover; min-height:260px; transition:transform .8s cubic-bezier(.16,1,.3,1);}
+.ev-card:hover img{transform:scale(1.06);}
+.ev-overlay{
+  position:absolute; inset:0; background:linear-gradient(0deg, rgba(15,28,20,.85) 0%, rgba(15,28,20,0) 45%);
+  display:flex; align-items:flex-end; padding:1.8rem;
+}
+.ev-overlay h3{color:var(--ivory); font-size:1.35rem; font-weight:500;}
+.ev-overlay p{color:var(--gold-soft); font-size:.82rem; margin-top:.3rem;}
+
+/* ---------- testimonials ---------- */
+.quote-track{overflow:hidden; padding:6rem 0; background:var(--ivory-dim);}
+.quote-slide{display:none; text-align:center; max-width:760px; margin:0 auto; padding:0 6vw;}
+.quote-slide.active{display:block;}
+.quote-slide p{font-family:var(--serif); font-style:italic; font-size:clamp(1.3rem,2.4vw,1.8rem); line-height:1.5; color:var(--forest);}
+.quote-who{margin-top:1.6rem; font-size:.85rem; color:var(--coral); letter-spacing:.02em;}
+.quote-dots{display:flex; justify-content:center; gap:.6rem; margin-top:2.2rem;}
+.quote-dots button{width:8px; height:8px; border-radius:50%; border:none; background:rgba(22,38,28,.25); cursor:pointer;}
+.quote-dots button.active{background:var(--coral);}
+
+/* ---------- contact ---------- */
+.contact{display:grid; grid-template-columns:1fr 1fr;}
+.contact-info{background:var(--forest-deep); color:var(--ivory); padding:6rem 6vw;}
+.contact-info h2{font-size:clamp(1.9rem,3vw,2.6rem); max-width:11ch;}
+.contact-info p{color:var(--ivory-dim); margin:1.2rem 0 2.2rem; line-height:1.7; max-width:38ch; font-weight:300;}
+.contact-list{list-style:none;}
+.contact-list li{padding:1rem 0; border-top:1px solid rgba(244,239,227,.14); font-size:.95rem;}
+.contact-list li:last-child{border-bottom:1px solid rgba(244,239,227,.14);}
+.contact-list span{display:block; color:var(--gold-soft); font-size:.75rem; margin-bottom:.3rem; letter-spacing:.03em;}
+.map-frame{position:relative; min-height:420px;}
+.map-frame iframe{width:100%; height:100%; min-height:420px; border:0; filter:saturate(.85) contrast(1.02);}
+
+/* ---------- footer ---------- */
+footer{background:var(--forest-deep); color:var(--ivory-dim); padding:3.4rem 0 2rem; border-top:1px solid rgba(244,239,227,.1);}
+footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.4rem;}
+footer .flogo{font-family:var(--serif); color:var(--ivory); font-size:1.15rem;}
+.fnav{display:flex; gap:1.8rem; font-size:.82rem;}
+.fsmall{font-size:.75rem; color:rgba(244,239,227,.4); margin-top:2rem; text-align:center;}
+
+/* reveal helper */
+.reveal{opacity:0; transform:translateY(36px);}
+
+/* ---------- responsive ---------- */
+@media (max-width: 880px){
+  nav{
+    position:fixed; inset:0 0 0 auto; width:78%; max-width:340px; height:100vh;
+    background:var(--forest-deep); flex-direction:column; align-items:flex-start;
+    padding:7rem 2rem; gap:1.8rem; transform:translateX(100%); transition:transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  nav.open{transform:translateX(0);}
+  nav a{font-size:1.05rem;}
+  .nav-toggle{display:flex;}
+  .about, .contact{grid-template-columns:1fr;}
+  .about-media{order:-1;}
+  .about-media .frame img{height:340px;}
+  .about-media .accent{position:static; margin-top:1rem; max-width:none;}
+  .room-row, .room-row.rev{grid-template-columns:1fr;}
+  .room-row.rev .room-media{order:0;}
+  .room-media img{height:280px;}
+  .events-grid{grid-template-columns:1fr;}
+  .ev-card:first-child{grid-row:auto;}
+  .ev-card img{min-height:220px;}
+  .rest{height:auto; padding:6rem 0;}
+  .rest-media{position:absolute;}
+  .pad{padding:5.5rem 0;}
+}/* ---------- chat widget ---------- */
+#chatBubble{
+  position:fixed; right:1.6rem; bottom:1.6rem; z-index:200;
+  width:58px; height:58px; border-radius:50%; background:var(--gold);
+  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
+#chatBubble svg{width:24px; height:24px; stroke:var(--forest-deep);}
+#chatBubble .dot{
+  position:absolute; top:-2px; right:-2px; width:12px; height:12px; border-radius:50%;
+  background:var(--coral); border:2px solid var(--ivory);
+}
+#chatPanel{
+  position:fixed; right:1.6rem; bottom:5.4rem; z-index:200;
+  width:min(360px, 90vw); height:min(520px, 70vh);
+  background:var(--ivory); border-radius:10px; overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.35);
+  display:flex; flex-direction:column;
+  transform:translateY(16px) scale(.97); opacity:0; pointer-events:none;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), opacity .3s ease;
+}
+#chatPanel.open{transform:translateY(0) scale(1); opacity:1; pointer-events:auto;}
+.chat-head{
+  background:var(--forest-deep); color:var(--ivory); padding:1rem 1.2rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.chat-head strong{font-family:var(--serif); font-weight:500; font-size:1.02rem;}
+.chat-head span{display:block; font-size:.72rem; color:var(--gold-soft); margin-top:.1rem;}
+.chat-close{background:none; border:none; color:var(--ivory-dim); font-size:1.3rem; cursor:pointer; line-height:1;}
+.chat-body{flex:1; overflow-y:auto; padding:1.1rem; display:flex; flex-direction:column; gap:.7rem;}
+.msg{max-width:85%; padding:.65rem .9rem; border-radius:9px; font-size:.88rem; line-height:1.5;}
+.msg.bot{background:var(--ivory-dim); align-self:flex-start; border-bottom-left-radius:2px;}
+.msg.user{background:var(--forest); color:var(--ivory); align-self:flex-end; border-bottom-right-radius:2px;}
+.msg.typing{display:flex; gap:4px; align-items:center; padding:.8rem .9rem;}
+.msg.typing span{width:6px; height:6px; border-radius:50%; background:var(--gold); opacity:.5; animation:blink 1.2s infinite;}
+.msg.typing span:nth-child(2){animation-delay:.2s;}
+.msg.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,100%{opacity:.3;}50%{opacity:1;}}
+.res-card{
+  background:var(--forest-deep); color:var(--ivory); border-radius:8px; padding:1rem;
+  align-self:flex-start; max-width:92%; font-size:.85rem;
+}
+.res-card h4{font-family:var(--serif); font-weight:500; color:var(--gold-soft); margin-bottom:.5rem; font-size:.95rem;}
+.res-card ul{list-style:none; margin-bottom:.9rem;}
+.res-card li{padding:.2rem 0; border-bottom:1px solid rgba(244,239,227,.1);}
+.res-card li span{color:var(--gold-soft); display:inline-block; min-width:86px; font-size:.75rem;}
+.res-actions{display:flex; gap:.5rem; flex-wrap:wrap;}
+.res-actions a{
+  font-size:.76rem; padding:.5rem .8rem; border-radius:5px; background:var(--gold); color:var(--forest-deep);
+  font-weight:500;
+}
+.chat-form{display:flex; gap:.5rem; padding:.9rem; border-top:1px solid rgba(22,38,28,.1); background:var(--ivory);}
+.chat-form input{
+  flex:1; border:1px solid rgba(22,38,28,.2); border-radius:6px; padding:.7rem .9rem;
+  font-family:var(--sans); font-size:.86rem; background:#fff;
+}
+.chat-form button{
+  background:var(--forest); color:var(--ivory); border:none; border-radius:6px;
+  padding:0 1.1rem; cursor:pointer; font-size:.86rem;
+}
+@media (max-width:480px){
+  #chatPanel{right:.8rem; bottom:5rem; width:calc(100vw - 1.6rem);}
+  #chatBubble{right:1rem; bottom:1rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="preloader"><div class="mark">La Réserve</div></div>
+
+<header id="site-header">
+  <div class="wrap">
+    <a href="#accueil" class="logo">La <em>Réserve</em></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav id="siteNav">
+      <a href="#about">L'hôtel</a>
+      <a href="#chambres">Chambres</a>
+      <a href="#restaurant">Restaurant</a>
+      <a href="#evenements">Événements</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="btn btn-gold"><span>Réserver</span></a>
+    </nav>
+  </div>
+</header>
+
+<!-- ---------- HERO ---------- -->
+<section class="hero" id="accueil">
+  <div class="hero-media"><img src="assets/restaurant-terrace.jpg" alt="Terrasse de La Réserve au crépuscule"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <div class="wrap">
+      <div class="hero-kicker">Berthé, Pétion-Ville, Haïti</div>
+      <h1>
+        <span class="line"><span>Un jardin tropical</span></span>
+        <span class="line"><span>au cœur de la ville</span></span>
+      </h1>
+      <p class="lede">Auberge, restaurant et bar nichés dans une végétation luxuriante, à quelques minutes des galeries d'art de Pétion-Ville.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-gold"><span>Réserver un séjour</span></a>
+        <a href="#chambres" class="btn btn-line"><span>Découvrir les chambres</span></a>
+      </div>
+      <div class="trust-strip">
+        <span><strong>4,2/5</strong> sur Tripadvisor</span>
+        <span class="tdot"></span>
+        <span><strong>54</strong> avis voyageurs</span>
+        <span class="tdot"></span>
+        <span>Classé n°1 des B&amp;B de Pétion-Ville sur Tripadvisor</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">Défiler</div>
+</section>
+
+<!-- ---------- ABOUT ---------- -->
+<section class="pad" id="about">
+  <div class="wrap about">
+    <div class="about-text reveal">
+      <div class="eyebrow">L'esprit de la maison</div>
+      <h2>Une oasis paisible, à l'abri du tumulte</h2>
+      <p>Perchée dans les hauteurs de Pétion-Ville, La Réserve cultive depuis toujours un cadre enchanteur : une végétation dense, un service attentif et une cuisine fusion créole servie du matin jusqu'au soir. Ici, la ville s'efface derrière les frangipaniers.</p>
+      <div class="about-figures">
+        <div class="fig"><div class="num">18</div><div class="lab">chambres climatisées</div></div>
+        <div class="fig"><div class="num">7j/7</div><div class="lab">restaurant &amp; bar</div></div>
+        <div class="fig"><div class="num">24h</div><div class="lab">sécurité &amp; parking</div></div>
+      </div>
+    </div>
+    <div class="about-media reveal">
+      <div class="frame"><img id="aboutImg" src="assets/room-classic.jpg" alt="Chambre de La Réserve"></div>
+      <div class="accent">« Le lieu idéal pour tous types d'évènements. »</div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- CHAMBRES ---------- -->
+<section class="pad" id="chambres" style="background:var(--ivory-dim);">
+  <div class="wrap">
+    <div class="rooms-head reveal">
+      <h2>Trois façons de se sentir chez soi</h2>
+      <p>Chaque chambre est climatisée, dotée d'une télévision à écran plat, du wifi gratuit et d'un coffre-fort, pensée pour le repos autant que pour le travail.</p>
+      <p class="rooms-note">18 chambres au total, un nombre volontairement limité pour préserver le calme du jardin.</p>
+    </div>
+
+    <div class="room-row reveal">
+      <div class="room-media"><img id="parallaxRoom1" src="assets/room-suite.jpg" alt="Suite mezzanine avec toit en bois"></div>
+      <div class="room-copy">
+        <div class="room-tag">Suite Mezzanine</div>
+        <h3>Sous les charpentes de bois</h3>
+        <p>Volumes généreux, plafond cathédrale en bois exposé et grandes baies vitrées ouvertes sur la canopée. Un salon privé prolonge la chambre.</p>
+        <div class="amenities"><span>Climatisation</span><span>Salon privé</span><span>Vue jardin</span><span>Coffre-fort</span></div>
+        <a href="#contact" class="room-link">Réserver cette chambre →</a>
+      </div>
+    </div>
+
+    <div class="room-row rev reveal">
+      <div class="room-media"><img id="parallaxRoom2" src="assets/room-classic.jpg" alt="Chambre Classique lumière tamisée"></div>
+      <div class="room-copy">
+        <div class="room-tag">Chambre Classique</div>
+        <h3>Chaleur et intimité</h3>
+        <p>Boiseries claires, éclairage tamisé et petit bureau : une chambre pensée pour les séjours d'affaires comme pour les escapades romantiques.</p>
+        <div class="amenities"><span>Bureau</span><span>Wifi gratuit</span><span>TV câblée</span></div>
+        <a href="#contact" class="room-link">Réserver cette chambre →</a>
+      </div>
+    </div>
+
+    <div class="room-row reveal">
+      <div class="room-media"><img id="parallaxRoom3" src="assets/room-twin.jpg" alt="Chambre Twin deux lits"></div>
+      <div class="room-copy">
+        <div class="room-tag">Chambre Twin</div>
+        <h3>Pensée pour deux</h3>
+        <p>Deux lits, sols en pierre naturelle et grande fenêtre sur la verdure, idéale pour les amis en voyage ou les familles.</p>
+        <div class="amenities"><span>Deux lits</span><span>Sèche-cheveux</span><span>Ménage quotidien</span></div>
+        <a href="#contact" class="room-link">Réserver cette chambre →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- RESTAURANT (parallax) ---------- -->
+<section class="rest" id="restaurant">
+  <div class="rest-media"><img id="restImg" src="assets/restaurant-terrace.jpg" alt="Terrasse restaurant sous la pergola"></div>
+  <div class="rest-scrim"></div>
+  <div class="wrap">
+    <div class="rest-content reveal">
+      <div class="eyebrow">Bar &amp; Restaurant</div>
+      <h2>Cuisine fusion créole, sous la canopée</h2>
+      <p>Une terrasse ouverte sur le jardin, un bar lounge pour un verre au calme, et une carte qui marie les saveurs locales à une touche internationale.</p>
+      <div class="rest-hours">
+        <div><strong>6h30 à 22h00</strong>Tous les jours</div>
+        <div><strong>Petit-déjeuner buffet</strong>Inclus chaque matin</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- EVENEMENTS ---------- -->
+<section class="pad" id="evenements">
+  <div class="wrap">
+    <div class="events-head reveal">
+      <div class="eyebrow">Mariages &amp; réceptions</div>
+      <h2>Un jardin pour vos grands moments</h2>
+      <p>De l'intimité d'un dîner aux lumières de bougies jusqu'aux grands événements de marque, La Réserve met son jardin, sa cuisine et son service traiteur à disposition de vos célébrations.</p>
+    </div>
+    <div class="events-grid reveal">
+      <div class="ev-card">
+        <img src="assets/event-wedding.jpg" alt="Réception de mariage aux chandelles">
+        <div class="ev-overlay"><div><h3>Mariages &amp; dîners privés</h3><p>Service traiteur complet, terrasse fleurie</p></div></div>
+      </div>
+      <div class="ev-card">
+        <img src="assets/event-corporate.jpg" alt="Événement corporate en plein air">
+        <div class="ev-overlay"><div><h3>Événements corporate</h3><p>Lancements de marque, soirées d'entreprise</p></div></div>
+      </div>
+      <div class="ev-card">
+        <img src="assets/room-suite.jpg" alt="Espace lounge">
+        <div class="ev-overlay"><div><h3>Cocktails &amp; lounge</h3><p>Bar sur mesure, ambiance jardin</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- TESTIMONIALS ---------- -->
+<div class="quote-track">
+  <div class="wrap">
+    <div class="quote-slide active">
+      <p>Un lieu résolument magique. La végétation luxuriante permet d'apprécier des moments uniques, loin du tumulte de la ville.</p>
+      <div class="quote-who">Avis client, Tripadvisor</div>
+    </div>
+    <div class="quote-slide">
+      <p>Calme, propre, sûr, accueillant, wifi fonctionnel, excellente cuisine et un service parfait. La meilleure adresse de Pétion-Ville.</p>
+      <div class="quote-who">Avis client, Tripadvisor</div>
+    </div>
+    <div class="quote-slide">
+      <p>La vue depuis la chambre était magnifique et le jardin, d'un calme absolu. On avait presque oublié qu'on était encore en ville.</p>
+      <div class="quote-who">Avis client, Tripadvisor</div>
+    </div>
+    <div class="quote-dots">
+      <button class="active" data-i="0"></button><button data-i="1"></button><button data-i="2"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- CONTACT ---------- -->
+<section class="contact" id="contact">
+  <div class="contact-info reveal">
+    <div class="eyebrow">Réservation</div>
+    <h2>Réservez votre séjour à La Réserve</h2>
+    <p>Notre équipe répond du lundi au dimanche pour organiser votre séjour, votre événement ou votre dîner.</p>
+    <ul class="contact-list">
+      <li><span>Adresse</span>2, Rue Marcel Toureau, Berthé, Pétion-Ville, Haïti</li>
+      <li><span>Téléphone</span>+509 2940-0190</li>
+      <li><span>E-mail</span>info@lareserveht.com</li>
+      <li><span>Arrivée / Départ</span>13h00 / 12h00</li>
+    </ul>
+    <a href="#" class="btn btn-gold" style="margin-top:2rem;"><span>Demander une disponibilité</span></a>
+  </div>
+  <div class="map-frame">
+    <iframe src="https://www.google.com/maps?q=La%20Reserve%20Hotel%20Petion%20Ville%20Haiti&output=embed" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="flogo">La <em style="font-style:italic;">Réserve</em></div>
+    <div class="fnav">
+      <a href="#about">L'hôtel</a>
+      <a href="#chambres">Chambres</a>
+      <a href="#restaurant">Restaurant</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+  <div class="fsmall">© 2026 La Réserve Hôtel, Berthé, Pétion-Ville, Haïti</div>
+</footer>
+
+<script>
+/* =========================================================
+   1) MICRO SMOOTH-SCROLL (inspiré de Lenis, écrit en vanilla JS
+      car Lenis n'est pas distribué sur le CDN autorisé ici,
+      reproduit léger pour garder la même sensation de glisse)
+   ========================================================= */
+class SilkScroll{
+  constructor(){
+    this.current = window.scrollY;
+    this.target = window.scrollY;
+    this.ease = 0.09;
+    this.height = document.documentElement.scrollHeight;
+    this.running = true;
+    window.addEventListener('resize', ()=> this.height = document.documentElement.scrollHeight);
+    window.addEventListener('scroll', ()=> this.target = window.scrollY, {passive:true});
+    requestAnimationFrame(this.raf.bind(this));
+  }
+  raf(){
+    this.current += (this.target - this.current) * this.ease;
+    if(Math.abs(this.target - this.current) < 0.05) this.current = this.target;
+    if(window.ScrollTrigger) ScrollTrigger.update();
+    requestAnimationFrame(this.raf.bind(this));
+  }
+}
+// activated as a lightweight easing signal for ScrollTrigger sync only
+// (native scroll stays fully intact for accessibility & anchors)
+const silk = new SilkScroll();
+
+/* =========================================================
+   2) GSAP SETUP
+   ========================================================= */
+gsap.registerPlugin(ScrollTrigger);
+
+/* Preloader : un seul moment orchestré à l'ouverture */
+const tlLoad = gsap.timeline({
+  onComplete(){ document.getElementById('preloader').style.display='none'; }
+});
+tlLoad
+  .to('#preloader .mark', {opacity:1, duration:.6, ease:'power2.out'})
+  .to('#preloader', {autoAlpha:0, duration:.7, delay:.35, ease:'power2.inOut'})
+  .to('.hero-kicker', {y:0, opacity:1, duration:.01}, '<')
+  .to('.hero h1 .line span', {y:'0%', duration:1.1, stagger:.12, ease:'power4.out'}, '-=.3')
+  .to('.hero p.lede', {opacity:1, y:0, duration:.9, ease:'power2.out'}, '-=.6')
+  .to('.hero-cta', {opacity:1, y:0, duration:.9, ease:'power2.out'}, '-=.7')
+  .to('.trust-strip', {opacity:1, y:0, duration:.9, ease:'power2.out'}, '-=.6')
+  .to('.scroll-cue', {opacity:1, duration:.8}, '-=.5');
+
+gsap.set('.hero p.lede, .hero-cta, .trust-strip, .scroll-cue', {y:16});
+
+/* Header solid state on scroll */
+ScrollTrigger.create({
+  start: 100,
+  onUpdate(self){
+    document.getElementById('site-header').classList.toggle('solid', self.scroll() > 80);
+  }
+});
+
+/* Reveal-on-scroll (one shared treatment, restrained) */
+document.querySelectorAll('.reveal').forEach(el=>{
+  gsap.to(el, {
+    opacity:1, y:0, duration:1, ease:'power3.out',
+    scrollTrigger:{ trigger: el, start:'top 85%' }
+  });
+});
+
+document.querySelectorAll('.room-row').forEach(row=>{
+  gsap.utils.toArray(row.children).forEach((child, i)=>{
+    gsap.fromTo(child, {opacity:0, y:40}, {
+      opacity:1, y:0, duration:1, ease:'power3.out', delay:i*.12,
+      scrollTrigger:{ trigger: row, start:'top 80%' }
+    });
+  });
+});
+
+document.querySelectorAll('.ev-card').forEach((card,i)=>{
+  gsap.fromTo(card, {opacity:0, y:50}, {
+    opacity:1, y:0, duration:.9, delay:i*.1, ease:'power3.out',
+    scrollTrigger:{ trigger: card, start:'top 88%' }
+  });
+});
+
+/* Hero parallax */
+gsap.to('.hero-media img', {
+  yPercent: 16, ease:'none',
+  scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
+});
+
+/* Restaurant parallax band */
+gsap.to('#restImg', {
+  yPercent: 14, ease:'none',
+  scrollTrigger:{ trigger:'.rest', start:'top bottom', end:'bottom top', scrub:true }
+});
+
+/* About image gentle zoom-out reveal */
+gsap.fromTo('#aboutImg', {scale:1.15}, {
+  scale:1, duration:1.6, ease:'power2.out',
+  scrollTrigger:{ trigger:'#about', start:'top 75%' }
+});
+
+/* Room images subtle parallax */
+['#parallaxRoom1','#parallaxRoom2','#parallaxRoom3'].forEach(sel=>{
+  gsap.to(sel, {
+    yPercent: 10, ease:'none',
+    scrollTrigger:{ trigger: sel, start:'top bottom', end:'bottom top', scrub:true }
+  });
+});
+
+/* Counters */
+document.querySelectorAll('.fig .num').forEach(el=>{
+  const raw = el.textContent.trim();
+  const num = parseInt(raw.replace(/\D/g,''), 10);
+  const suffix = raw.replace(/[0-9]/g,'');
+  if(!isNaN(num)){
+    const obj = {v:0};
+    ScrollTrigger.create({
+      trigger: el, start:'top 90%', once:true,
+      onEnter(){
+        gsap.to(obj, {v:num, duration:1.4, ease:'power2.out', onUpdate(){
+          el.textContent = Math.round(obj.v) + suffix;
+        }});
+      }
+    });
+    el.textContent = '0' + suffix;
+  }
+});
+
+/* =========================================================
+   3) NAV : bascule mobile + défilement fluide vers les ancres
+   ========================================================= */
+const navToggle = document.getElementById('navToggle');
+const siteNav = document.getElementById('siteNav');
+navToggle.addEventListener('click', ()=> siteNav.classList.toggle('open'));
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click', e=>{
+    siteNav.classList.remove('open');
+    const id = a.getAttribute('href');
+    if(id.startsWith('#')){
+      e.preventDefault();
+      const target = document.querySelector(id);
+      if(target){
+        const headerH = document.getElementById('site-header').offsetHeight;
+        const y = target.getBoundingClientRect().top + window.scrollY - headerH + 1;
+        window.scrollTo({top:y, behavior:'smooth'});
+      }
+    }
+  });
+});
+
+/* =========================================================
+   4) TESTIMONIAL SLIDER
+   ========================================================= */
+const slides = document.querySelectorAll('.quote-slide');
+const dots = document.querySelectorAll('.quote-dots button');
+let qi = 0;
+function showQuote(i){
+  slides.forEach(s=>s.classList.remove('active'));
+  dots.forEach(d=>d.classList.remove('active'));
+  slides[i].classList.add('active');
+  dots[i].classList.add('active');
+  gsap.fromTo(slides[i], {opacity:0, y:14}, {opacity:1, y:0, duration:.6, ease:'power2.out'});
+  qi = i;
+}
+dots.forEach(d=> d.addEventListener('click', ()=> showQuote(parseInt(d.dataset.i))));
+setInterval(()=> showQuote((qi+1) % slides.length), 5500);
+</script>
+<!-- ---------- CHAT IA ---------- -->
+<button id="chatBubble" aria-label="Ouvrir l'assistant">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span class="dot"></span>
+</button>
+
+<div id="chatPanel">
+  <div class="chat-head">
+    <div><strong>Assistant La Réserve</strong><span>Répond en quelques secondes</span></div>
+    <button class="chat-close" id="chatClose" aria-label="Fermer">×</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <form class="chat-form" id="chatForm">
+    <input type="text" id="chatInput" placeholder="Posez votre question…" autocomplete="off">
+    <button type="submit">Envoyer</button>
+  </form>
+</div>
+
+<script>
+/* =========================================================
+   5) ASSISTANT IA (Groq, via fonction serverless /api/chat)
+   ========================================================= */
+(function(){
+  const HOTEL_PHONE = "50929400190";      // format international sans le +
+  const HOTEL_EMAIL = "info@lareserveht.com";
+
+  const bubble = document.getElementById('chatBubble');
+  const panel  = document.getElementById('chatPanel');
+  const closeBtn = document.getElementById('chatClose');
+  const body   = document.getElementById('chatBody');
+  const form   = document.getElementById('chatForm');
+  const input  = document.getElementById('chatInput');
+
+  let history = [];
+  let opened  = false;
+
+  function addMsg(role, text){
+    const el = document.createElement('div');
+    el.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+    el.textContent = text;
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+    return el;
+  }
+
+  function addTyping(){
+    const el = document.createElement('div');
+    el.className = 'msg bot typing';
+    el.innerHTML = '<span></span><span></span><span></span>';
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+    return el;
+  }
+
+  function addReservationCard(data){
+    const el = document.createElement('div');
+    el.className = 'res-card';
+    const rows = [
+      ['Nom', data.nom], ['Arrivée', data.arrivee], ['Départ', data.depart],
+      ['Personnes', data.personnes], ['Chambre', data.chambre], ['Contact', data.contact]
+    ].filter(r => r[1]);
+    el.innerHTML = `<h4>Récapitulatif de la demande</h4>
+      <ul>${rows.map(r => `<li><span>${r[0]}</span>${r[1]}</li>`).join('')}</ul>
+      <div class="res-actions">
+        <a target="_blank" rel="noopener" href="https://wa.me/${HOTEL_PHONE}?text=${encodeURIComponent(buildSummary(data))}">Envoyer par WhatsApp</a>
+        <a href="mailto:${HOTEL_EMAIL}?subject=${encodeURIComponent('Demande de réservation, La Réserve')}&body=${encodeURIComponent(buildSummary(data))}">Envoyer par e-mail</a>
+      </div>`;
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function buildSummary(d){
+    return `Demande de réservation, La Réserve\nNom: ${d.nom||''}\nArrivée: ${d.arrivee||''}\nDépart: ${d.depart||''}\nPersonnes: ${d.personnes||''}\nChambre souhaitée: ${d.chambre||''}\nContact: ${d.contact||''}`;
+  }
+
+  /* L'assistant renvoie un bloc ```reservation { JSON } ``` quand la demande est complète.
+     On l'extrait, on l'affiche en fiche, et on le retire du texte affiché. */
+  function extractReservation(text){
+    const m = text.match(/```reservation\s*([\s\S]*?)```/i);
+    if(!m) return {clean: text, data: null};
+    let data = null;
+    try{ data = JSON.parse(m[1]); }catch(e){ data = null; }
+    return { clean: text.replace(m[0], '').trim(), data };
+  }
+
+  async function send(userText){
+    addMsg('user', userText);
+    history.push({role:'user', content:userText});
+    const typing = addTyping();
+
+    try{
+      const res = await fetch('/api/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({messages: history})
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if(!res.ok || !data.reply){
+        addMsg('bot', "Désolé, je rencontre un souci technique. Vous pouvez nous joindre directement au +509 2940-0190.");
+        return;
+      }
+
+      const { clean, data: reservation } = extractReservation(data.reply);
+      if(clean) addMsg('bot', clean);
+      if(reservation) addReservationCard(reservation);
+
+      history.push({role:'assistant', content:data.reply});
+    }catch(err){
+      typing.remove();
+      addMsg('bot', "Connexion indisponible pour le moment. Contactez-nous au +509 2940-0190 ou info@lareserveht.com.");
+    }
+  }
+
+  bubble.addEventListener('click', ()=>{
+    opened = !opened;
+    panel.classList.toggle('open', opened);
+    if(opened && body.children.length === 0){
+      addMsg('bot', "Bonjour, bienvenue à La Réserve. Je peux répondre à vos questions sur l'hôtel ou prendre votre demande de réservation. Que puis-je faire pour vous ?");
+    }
+  });
+  closeBtn.addEventListener('click', ()=>{ opened=false; panel.classList.remove('open'); });
+
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const text = input.value.trim();
+    if(!text) return;
+    input.value = '';
+    send(text);
+  });
+})();
+</script>
+
+</body>
+</html>
